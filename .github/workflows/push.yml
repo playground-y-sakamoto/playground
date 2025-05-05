@@ -1,0 +1,25 @@
+name: test on push
+
+on:
+  push:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check-workflows:
+    uses: ./.github/workflows/check-workflows.yml
+
+  build:
+    needs: check-workflows
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Hello world
+        run: echo "Hello world"
